@@ -1,10 +1,8 @@
 package com.noteshareapp.noteshare;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
 import android.os.StrictMode;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -30,17 +29,15 @@ import com.facebook.LoggingBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.plus.People;
-import com.google.android.gms.plus.Plus;
-import com.google.android.gms.plus.model.people.Person;
-import com.google.android.gms.plus.model.people.PersonBuffer;
 import com.noteshareapp.db.Config;
 import com.noteshareapp.db.Sync;
 
@@ -56,7 +53,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.List;
 
-public class LoginActivity extends Activity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener , ResultCallback<People.LoadPeopleResult> {
+public class LoginActivity extends FragmentActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener{
 
     LoginButton loginButton;
     CallbackManager callbackManager;
@@ -79,29 +76,10 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
     public SignInButton btnSignIn;
 
     // Google client to interact with Google API
-    private boolean mIntentInProgress;
-    private boolean mSignInClicked;
-    private ConnectionResult mConnectionResult;
+
     private GoogleApiClient mGoogleApiClient;
-    private static final int RC_SIGN_IN = 0;
+    private static final int RC_SIGN_IN = 9001;
 
-
-    @Override
-    public void onResult(People.LoadPeopleResult peopleData) {
-        if (peopleData.getStatus().getStatusCode() == CommonStatusCodes.SUCCESS) {
-            PersonBuffer personBuffer = peopleData.getPersonBuffer();
-            try {
-                int count = personBuffer.getCount();
-                for (int i = 0; i < count; i++) {
-                    Log.d(TAG, "Display name: " + personBuffer.get(i).getDisplayName());
-                }
-            } finally {
-                personBuffer.release();
-            }
-        } else {
-            Log.e(TAG, "Error requesting people data: " + peopleData.getStatus());
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,19 +124,20 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
         // Google Plus
         btnSignIn = (SignInButton) findViewById(R.id.btnGoogleSignIn);
         setGooglePlusButtonText(btnSignIn, "Google+");
-        btnSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signInWithGplus();
-            }
-        });
+        btnSignIn.setOnClickListener(this);
+
+
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_PROFILE)
-                .addScope(Plus.SCOPE_PLUS_LOGIN).build();
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
     }
 
     private boolean checkPlayServices() {
@@ -215,7 +194,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
                     Toast.makeText(LoginActivity.this,"Oops! Something went wrong!",Toast.LENGTH_SHORT).show();
                 }
             }
-        }.execute(null,null,null);
+        }.execute(null, null, null);
     }
 
     protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
@@ -301,25 +280,20 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //callbackManager.onActivityResult(requestCode, resultCode, data);
+
+        // Facebook
         if (callbackManager.onActivityResult(requestCode, resultCode, data)) {
             return;
         }
-        if (requestCode == RESULT_OK && resultCode == RESULT_OK) {
-            mConnectionResult = null;
-            mGoogleApiClient.connect();
-        }
+        //Facebook
+
+        //google
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
-            if (resultCode != RESULT_OK) {
-                mSignInClicked = false;
-            }
-
-            mIntentInProgress = false;
-
-            if (!mGoogleApiClient.isConnecting()) {
-                mGoogleApiClient.connect();
-            }
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
         }
+
     }
 
     public void main(View v){
@@ -581,81 +555,44 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
 
     }
 
-    @Override
-    public void onConnected(Bundle bundle) {
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
 
-        Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
-                .setResultCallback(this);
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            Log.e("jay name", acct.getDisplayName());
+            Log.e("jay id", acct.getId());
+            Log.e("jay email", acct.getEmail());
+            Log.e("jay photo", acct.getPhotoUrl().toString());
+            Log.e("jay ", acct.getGrantedScopes().toString());
+        } else {
 
-        mSignInClicked = false;
-        Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
-
-        // Get user's information
-        getProfileInformation();
-        signOutFromGplus();
-        // Update the UI after signin
-        //updateUI(true);
+        }
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-        mGoogleApiClient.connect();
-    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnGoogleSignIn:
                 // Signin button clicked
-                //signInWithGplus();
-                //Toast.makeText(this, "button clicked", Toast.LENGTH_LONG).show();
+                googleSignIn();
                 break;
         }
     }
 
-    private void resolveSignInError() {
-        if (mConnectionResult.hasResolution()) {
-            try {
-                mIntentInProgress = true;
-                mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
-            } catch (IntentSender.SendIntentException e) {
-                mIntentInProgress = false;
-                mGoogleApiClient.connect();
-            }
-        }
+    private void googleSignIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-
-    private void signInWithGplus() {
-        if (!mGoogleApiClient.isConnecting()) {
-            mSignInClicked = true;
-            resolveSignInError();
-        }
-    }
-
-
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-        Log.e("jay err", result.toString());
-        Log.e("jay err", String.valueOf(result.getErrorCode()));
-        if (!result.hasResolution()) {
-            GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), this, 0).show();
-            return;
-        }
-
-        if (!mIntentInProgress) {
-            // Store the ConnectionResult for later usage
-            mConnectionResult = result;
-            if (mSignInClicked) {
-                // The user has already clicked 'sign-in' so we attempt to
-                // resolve all
-                // errors until the user is signed in, or they cancel.
-                resolveSignInError();
-            }
-        }
+        Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
     }
 
-    private void getProfileInformation() {
+    /*private void getProfileInformation() {
         Log.e("jay ", "inside");
         Log.e("jay ", mGoogleApiClient.toString());
         try {
@@ -681,24 +618,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
                 e.printStackTrace();
                 Log.e("jay", Log.getStackTraceString(e));
         }
-    }
+    }*/
 
-    private void signOutFromGplus() {
-        if (mGoogleApiClient.isConnected()) {
-            Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-            mGoogleApiClient.disconnect();
-            mGoogleApiClient.connect();
-        }
-    }
-
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-    protected void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
 }

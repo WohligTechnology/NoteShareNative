@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 22
@@ -45,8 +44,11 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'com.github.lassana:continuous-audiorecorder:1.1.0'
     compile 'com.squareup.okhttp:okhttp:2.7.0'
-    compile 'com.google.android.gms:play-services:8.1.0'
+    compile 'com.google.android.gms:play-services-auth:8.4.0'
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'
     //compile 'com.google.android.gms:play-services-auth:8.1.0'
     //compile 'com.android.support:multidex:1.0.1'
 
 }
+
+apply plugin: 'com.google.gms.google-services'
