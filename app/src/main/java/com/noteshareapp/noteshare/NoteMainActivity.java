@@ -721,10 +721,6 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
                         int x = (int) event.getX();
                         int y = (int) event.getX();
 
-
-                        Log.e("jay x", String.valueOf(x));
-                        Log.e("jay y", String.valueOf(y));
-
                         return false;
                     }
                 });
@@ -1033,18 +1029,15 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
 
                 if (isDeleteModeSelected) {
 
-                    Log.e("jay size", String.valueOf(multipleDeleteArray.size()));
                     imageButtonDeleteMode.setBackgroundColor(getResources().getColor(R.color.header_bg));
                     for (int i = 0; i < allDelete.size(); i++) {
                         try {
                             allDelete.get(i).setVisibility(View.GONE);
                         } catch (NullPointerException npe) {
-                            Log.e("jay ", Log.getStackTraceString(npe));
                         }
                     }
 
                     for (int i = 0; i < multipleDeleteArray.size(); i++) {
-                        Log.e("jay iiiiii", String.valueOf(i));
                         deleteElements(multipleDeleteArray.get(i));
                         multipleDeleteParentArray.get(i).setVisibility(View.GONE);
                     }
@@ -2539,14 +2532,11 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
                             if (height[0] < editor.getHeight()) {
                                 height[0] = editor.getHeight();
 
-                                Log.e("jay editor height", String.valueOf(editor.getHeight()));
-                                Log.e("jay dp from px", String.valueOf(dpFromPx(getApplicationContext(), editor.getHeight())));
                                 scrollView.setScrollY(scrollView.getScrollY() + pxFromDp(NoteMainActivity.this, 20));
                             }
                             if (height[0] > editor.getHeight()) {
                                 height[0] = editor.getHeight();
 
-                                Log.e("jay editor height", String.valueOf(editor.getHeight()));
                                 scrollView.setScrollY(scrollView.getScrollY() - pxFromDp(NoteMainActivity.this, 20));
                             }
                         }
@@ -2581,8 +2571,6 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
                                         int height = editor.getHeight();
 
                                         int conheight = editor.getContentHeight();
-                                        Log.e("jay text height", String.valueOf(height));
-                                        Log.e("jay con height", String.valueOf(conheight));
                                         //...
                                         //do whatever you want with them
                                         //...
@@ -2807,7 +2795,6 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
                                 //now we can retrieve the width and height
                                 int width = note_audio.getWidth();
                                 int height = note_audio.getHeight();
-                                Log.e("jay audio height", String.valueOf(height));
                                 //...
                                 //do whatever you want with them
                                 //...
@@ -2846,7 +2833,6 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
                         checklist_text.setTypeface(RegularFunctions.getAgendaMediumFont(this));
                         //checklist_text.setTag(allCheckboxText.size()-1);
 
-                        Log.e("jay height", String.valueOf(checkbox.getMeasuredHeight()));
 
                         noteElements.addView(checkbox);
 
@@ -2960,11 +2946,9 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
         if (!isDeleteModeSelected) {
             imageButtonDeleteMode.setBackgroundColor(getResources().getColor(R.color.A8b241b));
             for (int i = 0; i < allDelete.size(); i++) {
-                //Log.e("jay i", String.valueOf(i));
                 try {
                     allDelete.get(i).setVisibility(View.VISIBLE);
                 } catch (NullPointerException npe) {
-                    Log.e("jay ", Log.getStackTraceString(npe));
                 }
             }
             isDeleteModeSelected = true;
@@ -2974,7 +2958,6 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
                 try {
                     allDelete.get(i).setVisibility(View.GONE);
                 } catch (NullPointerException npe) {
-                    Log.e("jay ", Log.getStackTraceString(npe));
                 }
             }
             isDeleteModeSelected = false;
@@ -3469,9 +3452,6 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
 
         int blankSpace = pxFromDp(this, 1500);
 
-        Log.e("jay sw", String.valueOf(width));
-        Log.e("jay sh", String.valueOf(height - blankSpace));
-
         int screenShotHeight = height - blankSpace;
 
         double j = ((double) screenShotHeight) / 200;
@@ -3481,11 +3461,9 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
 
         bitmapCanvas.setBitmap(bitmap);
 
-        Log.e("jay bg",background);
 
         boolean check = background.startsWith("#");
 
-        Log.e("jay bg check", String.valueOf(check));
 
         if (background.startsWith("#"))
             bitmapCanvas.drawColor(Color.parseColor(background));

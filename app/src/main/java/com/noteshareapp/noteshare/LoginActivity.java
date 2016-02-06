@@ -38,6 +38,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.api.ResultCallback;
 import com.noteshareapp.db.Config;
 import com.noteshareapp.db.Sync;
 
@@ -67,7 +69,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     GoogleCloudMessaging gcm;
     String msg;
     String regid;
-    public String socialid, fullname, useremail, profilePicture, loginType;
+    public String socialid, fullname, useremail, profilePicture = "null", loginType;
 
     String responseFbId = "", responseGpId ="";
     static String responseServerId = "";
@@ -84,9 +86,6 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //List<Note> notes = Note.findWithQuery(Note.class,"Select * from NOTE INNER JOIN NOTE_ELEMENT on NOTE.id = NOTE_ELEMENT.noteid where NOTE_ELEMENT.type = 'checkbox'");
-        //Log.e("jay size",String.valueOf(notes.size()));
 
         List<Config> config = Config.listAll(Config.class);
         if(config.size() == 0) {
@@ -170,7 +169,6 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                     regid = gcm.register(SENDER_ID);
                     msg = "Device registered, registration ID=" + regid;
                     gcmIdReceived = true;
-                    Log.e("jay regid", regid);
 
                 } catch (IOException ex) {
                     gcmIdReceived = false;
@@ -347,17 +345,10 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     public void getGcmId(){
         if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
-            /*regid = getRegistrationId(context);
-
-            if (regid.isEmpty()) {
-                registerInBackground();
-            }*/
-            Log.e("jay in", "gcmId");
-
             registerInBackground();
 
         } else {
-            Log.e("Jay", "No valid Google Play Services APK found.");
+            Log.e(TAG, "No valid Google Play Services APK found.");
         }
     }
 
@@ -371,12 +362,12 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     }
 
 
-    boolean once = false;
+    //boolean once = false;
 
     public void sendLogin() throws JSONException, ClientProtocolException, IOException {
 
-        if(!once) {
-            once = true;
+        //if(!once) {
+            //once = true;
             progressDialog = new ProgressDialog(LoginActivity.this);
             progressDialog.setCancelable(false);
             progressDialog.setMessage("Please wait...");
@@ -400,7 +391,6 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                     try {
                         String loginjson = loginJson(loginType, socialid, fullname, useremail, profilePicture, regid).toString();
                         String response = RegularFunctions.post(RegularFunctions.SERVER_URL + "user/sociallogin1", loginjson);
-                        Log.e("jay response", response);
 
                         String responseName = null;
                         String responseEmail = null;
@@ -477,7 +467,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                     //goToMain();
                 }
             }.execute(null, null, null);
-        }
+        //}
     }
 
     public JSONObject loginJson(String loginType, String socialid, String fullname, String useremail , String profilePicture, String regid) throws JSONException {
@@ -556,16 +546,10 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
-
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            Log.e("jay name", acct.getDisplayName());
-            Log.e("jay id", acct.getId());
-            Log.e("jay email", acct.getEmail());
-            Log.e("jay photo", acct.getPhotoUrl().toString());
-            Log.e("jay ", acct.getGrantedScopes().toString());
+            getProfileInformation(acct);
         } else {
 
         }
@@ -587,37 +571,43 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    private void googleSignOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        Log.d(TAG,"Logged out");
+                    }
+                });
+    }
+
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
     }
 
-    /*private void getProfileInformation() {
-        Log.e("jay ", "inside");
-        Log.e("jay ", mGoogleApiClient.toString());
+    private void getProfileInformation(GoogleSignInAccount acct) {
         try {
 
-            if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
+            fullname = acct.getDisplayName();
+            socialid = acct.getId();
+            useremail = acct.getEmail();
+            loginType = "gp";
 
-                Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-                fullname = currentPerson.getDisplayName();
-                String personPhotoUrl = currentPerson.getImage().getUrl();
-                socialid = currentPerson.getId();
-                useremail = Plus.AccountApi.getAccountName(mGoogleApiClient);
-                loginType = "gp";
-                profilePicture = personPhotoUrl.substring(0, personPhotoUrl.length() - 2) + 200;
-                getGcmId();
-            } else {
-                if(!RegularFunctions.checkIsOnlineViaIP())
-                   Toast.makeText(getApplication(), "Please check your Internet Connection!", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplication(), "Something went wrong, please try again later!", Toast.LENGTH_SHORT).show();
-                    //Toast.makeText(getApplicationContext(), "Please check your internet connection.", Toast.LENGTH_LONG).show();
-                }
-            } catch (Exception e) {
+            if(acct.getPhotoUrl() != null){
+                profilePicture = acct.getPhotoUrl().toString() + "?sz=200";
+            }else{
+                profilePicture = "http://wohlig.co.in/noteshare/defaultprofile.jpg";
+            }
+
+            getGcmId();
+            googleSignOut();
+
+        } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("jay", Log.getStackTraceString(e));
+                googleSignOut();
+                Log.e(TAG, Log.getStackTraceString(e));
         }
-    }*/
+    }
 
 }

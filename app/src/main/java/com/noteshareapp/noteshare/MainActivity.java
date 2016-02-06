@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -110,8 +109,6 @@ public class MainActivity extends DrawerActivity {
 
         Intent intent = this.getIntent();
         folderIdforNotes = intent.getStringExtra("FolderId");
-        //Log.e("jay ***", folderIdforNotes);
-        Log.v("select", "OnCreate" + folderIdforNotes);
 
         LayoutInflater inflater = (LayoutInflater) this
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -146,7 +143,6 @@ public class MainActivity extends DrawerActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.e("jay *****", "****");
                 List<Long> idList = new ArrayList<Long>();
 
                 if (folderIdforNotes == null || folderIdforNotes.equals("-1") || folderIdforNotes == "") {
@@ -157,24 +153,20 @@ public class MainActivity extends DrawerActivity {
                     sortallnotes = Note.findWithQuery(Note.class, "Select * from Note where creationtime != 0 AND title LIKE ? AND folder = " + folderIdforNotes, "%" + editTextsearchNote.getText().toString() + "%");
 
                 }
-                //Log.e("jay sortall size", String.valueOf(sortallnotes.size()));
 
                 for (int i = 0; i < sortallnotes.size(); i++) {
                     idList.add(sortallnotes.get(i).getId());
-                    //Log.e("jay sortall id", String.valueOf(sortallnotes.get(i).getId()));
+
                 }
 
                 // find elements
                 List<NoteElement> ne = NoteElement.findWithQuery(NoteElement.class, "Select DISTINCT NOTEID from NOTE_ELEMENT where content_A LIKE ?", "%" + editTextsearchNote.getText().toString() + "%");
-                //Log.e("jay ne size", String.valueOf(ne.size()));
                 for (int i = 0; i < ne.size(); i++) {
                     idList.add(ne.get(i).getNoteid());
-                    //Log.e("jay ne id", String.valueOf(ne.get(i).getNoteid()));
                 }
 
                 //get only unique ids using set
                 Set<Long> set = new HashSet<Long>(idList);
-                //Log.e("jay set size", String.valueOf(set.size()));
                 sortallnotes.clear();
 
                 //convert set to list and add notes into sortallnotes
@@ -198,7 +190,6 @@ public class MainActivity extends DrawerActivity {
 
                 for (int i = 0; i < list.size(); i++) {
                     sortallnotes.add(Note.findById(Note.class, list.get(i).longValue()));
-                    Log.e("jay list id", String.valueOf(list.get(i).longValue()));
                 }
 
                 String strCout = "(" + sortallnotes.size() + ")";
@@ -249,13 +240,8 @@ public class MainActivity extends DrawerActivity {
                 Toast.makeText(MainActivity.this, "Syncing your Notes and Folders in background...", Toast.LENGTH_SHORT).show();
                 startSync();
             } else if (type == 2) {
-                Log.e("jay sync", "inside 2");
-                //Toast.makeText(getApplicationContext(), "Sync only on wifi option selected.", Toast.LENGTH_SHORT).show();
+
             }
-
-
-            Log.e("jay sync status", String.valueOf(RegularFunctions.checkLastSyncDifference()));
-            //startSync();
         }
     }
 
@@ -314,7 +300,6 @@ public class MainActivity extends DrawerActivity {
     }
 
     public void btnCallbacks(Object data) {
-        System.out.println("the tag us" + data);
         DataManager.sharedDataManager().setSelectedIndex(-1);
 
         adapter.notifyDataSetChanged();
@@ -364,7 +349,6 @@ public class MainActivity extends DrawerActivity {
             checkTimeClicked();
         } catch (ParseException e) {
             e.printStackTrace();
-            Log.e("jay exception", String.valueOf(e));
         }
         populate();
         sortingArray();
@@ -579,13 +563,6 @@ public class MainActivity extends DrawerActivity {
 
         final Dialog myDialog = new Dialog(MainActivity.this,
                 R.style.CustomTheme);
-
-        // layoutReminderTime
-        // layouttimebomb
-        //String fontMedium = "dancingscript.ttf";
-
-        //Typeface myCustomFont = Typeface.createFromAsset(this.getAssets(), "Lato-Regular.ttf");
-        //Typeface tfMedium = Typeface.createFromAsset(this.getAssets(), fontMedium);
 
         myDialog.setContentView(R.layout.actionsheet_sort);
         Button buttonDissmiss = (Button) myDialog
@@ -816,7 +793,6 @@ public class MainActivity extends DrawerActivity {
     void populate() {
         list = new ArrayList<HashMap<String, String>>();
         List<Note> allnotes;
-        //Log.e("jay inside populate **", folderIdforNotes);
         if (folderIdforNotes == null || folderIdforNotes == "-1")
             allnotes = Note.findWithQuery(Note.class, "Select * from Note WHERE creationtime != 0 AND folder ='0' ORDER BY ID DESC");
         else
@@ -838,12 +814,7 @@ public class MainActivity extends DrawerActivity {
             noteIdList.add(currentnote.getId().toString());
             String noteDesc = "";
 
-			/*List<NoteElement> noteElements = NoteElement.findWithQuery(NoteElement.class, "SELECT DISTINCT TYPE FROM NOTE_ELEMENT WHERE NOTEID = " + currentnote.getId());
-            for (NoteElement currentNoteElement : noteElements){
-				noteDesc += currentNoteElement.getType().toUpperCase() + " ";
-			}*/
-            //List<NoteElement> noteElements = NoteElement.findWithQuery(NoteElement.class, "SELECT DISTINCT TYPE FROM NOTE_ELEMENT WHERE NOTEID = " + currentnote.getId() + " AND ");
-            List<NoteElement> noteElements = NoteElement.find(NoteElement.class, "type = ? and noteid = ?", "text", currentnote.getId().toString());
+			List<NoteElement> noteElements = NoteElement.find(NoteElement.class, "type = ? and noteid = ?", "text", currentnote.getId().toString());
 
             if (noteElements.size() != 0 && noteElements.get(0).getContentA() != null) {
                 noteDesc = noteElements.get(0).getContentA();

@@ -17,7 +17,6 @@ import android.os.Looper;
 import android.provider.CalendarContract;
 import android.provider.MediaStore;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -583,7 +582,6 @@ public class NoteFunctions {
 
             for (int i = 0; i < noteElements.size(); i++) {
 
-                Log.e("jay og", noteElements.get(i).getContent());
                 String j = noteElements.get(i).getContent();
 
                 j = j.replace("</li>", "</li><br />");
@@ -605,12 +603,6 @@ public class NoteFunctions {
             shareIntent.putExtra(Intent.EXTRA_TEXT, noteDesc);
             context.startActivity(Intent.createChooser(shareIntent, "Send Text to"));
 
-
-            /*Source source=new Source(noteDesc);
-            String renderedText=source.getRenderer().toString();
-            System.out.println("\nSimple rendering of the HTML document: jay\n");
-            System.out.println("jay" +renderedText);
-            Log.e("jay", renderedText);*/
         } else {
             noteDesc = "";
         }
@@ -646,9 +638,6 @@ public class NoteFunctions {
 
         int blankSpace = RegularFunctions.pxFromDp(context, 1500);
 
-        Log.e("jay sw", String.valueOf(width));
-        Log.e("jay sh", String.valueOf(height - blankSpace));
-
         int screenShotHeight = height - blankSpace;
 
         double j = ((double) screenShotHeight) / 200;
@@ -680,7 +669,6 @@ public class NoteFunctions {
         context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
         Toast.makeText(context, "Screenshot taken", Toast.LENGTH_SHORT).show();
-        Log.e("jay ss", "generated");
 
     }
 
@@ -785,15 +773,10 @@ public class NoteFunctions {
 
                     String[] emailids = emails.split(",");
 
-                    Log.e("jay emailids len", String.valueOf(emailids.length));
-
                     boolean valid = false;
                     for (int i = 0; i < emailids.length; i++) {
-                        Log.e("jay emailids", emailids[i]);
 
                         emailids[i] = emailids[i].toLowerCase().trim();
-
-                        Log.e("jay emailids trimmed", emailids[i]);
 
                         if (!RegularFunctions.isValidEmail(emailids[i])) {
                             emailTo.setError("Invalid Email");
@@ -821,8 +804,6 @@ public class NoteFunctions {
                             }
                         }
 
-                        Log.e("jay email final", finalEmailList);
-
                         final ProgressDialog progressDialog = new ProgressDialog(context);
                         progressDialog.setMessage("Loading...");
                         progressDialog.setCanceledOnTouchOutside(false);
@@ -840,10 +821,8 @@ public class NoteFunctions {
                                 RegularFunctions.syncNow();
                                 try {
                                     String shareEmailJson = shareJson(id, finalEmailList1).toString();
-                                    Log.e("jay sharejson", shareEmailJson);
 
                                     String response = RegularFunctions.post(RegularFunctions.SERVER_URL + "share/save", shareEmailJson);
-                                    Log.e("jay response", response);
 
                                     JSONObject jsonObject = new JSONObject(response);
 
