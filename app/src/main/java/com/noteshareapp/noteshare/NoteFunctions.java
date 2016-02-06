@@ -706,7 +706,7 @@ public class NoteFunctions {
                         +"\n\n-via NoteShare";*/
 
                 String shareMessage = RegularFunctions.getUserName() + " has shared \'" + RegularFunctions.getNoteName(id) + "\' note with you.\n\n"
-                        + RegularFunctions.SERVER_URL + "/view/" + RegularFunctions.getServerNoteId(id)
+                        + "http://www.noteshareapp.com/view/" + RegularFunctions.getServerNoteId(id)
                         + "\n\n-via NoteShare";
 
                 /*Log.e("jay", shareMessage);

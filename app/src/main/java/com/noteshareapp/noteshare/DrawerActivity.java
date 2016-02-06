@@ -218,7 +218,7 @@ public class DrawerActivity extends Activity implements MenuOpenInterface {
 				}
 				break;
 				case 5:{
-					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.facebook.com/")));
+					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.facebook.com/NoteShareApp")));
 					//finish();
 				}
 				break;

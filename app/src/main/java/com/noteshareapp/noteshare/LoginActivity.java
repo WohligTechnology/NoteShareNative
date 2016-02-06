@@ -37,9 +37,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.noteshareapp.db.Config;
 import com.noteshareapp.db.Sync;
 
@@ -122,7 +122,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
         // Google Plus
         btnSignIn = (SignInButton) findViewById(R.id.btnGoogleSignIn);
-        setGooglePlusButtonText(btnSignIn, "Google+");
+        setGooglePlusButtonText(btnSignIn, "Google");
         btnSignIn.setOnClickListener(this);
 
 
@@ -224,7 +224,6 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
 
-                            if (BuildConfig.DEBUG) {
                                 FacebookSdk.setIsDebugEnabled(true);
                                 FacebookSdk.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
 
@@ -249,7 +248,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                                 getGcmId();
                                 facebookLogout();
 
-                            }
+
                         }
                     });
             Bundle parameters = new Bundle();
@@ -389,7 +388,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                         Looper.prepare();
                     }
                     try {
-                        String loginjson = loginJson(loginType, socialid, fullname, useremail, profilePicture, regid).toString();
+                        String loginjson = loginJson(loginType, socialid, "James Davis", useremail, profilePicture, regid).toString();
                         String response = RegularFunctions.post(RegularFunctions.SERVER_URL + "user/sociallogin1", loginjson);
 
                         String responseName = null;
