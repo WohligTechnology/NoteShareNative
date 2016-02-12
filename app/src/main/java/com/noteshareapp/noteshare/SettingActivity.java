@@ -377,6 +377,9 @@ public class SettingActivity extends DrawerActivity {
 			e.printStackTrace();
 		}
 
+		//clear notification count
+		RegularFunctions.setNotificationCountLocal(getApplicationContext());
+
 		//flush sync values
 		Sync s = Sync.findById(Sync.class, 1l);
 		s.setFolderLocalToServer(0l);

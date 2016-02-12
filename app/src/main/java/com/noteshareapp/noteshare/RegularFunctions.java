@@ -409,7 +409,7 @@ public class RegularFunctions {
         return jsonObject;
     }
 
-    public static int getNotificationCount(Context context){
+    public static int getNotificationCountServer(Context context){
 
         try {
             String notificationJson = getNotificationsJson().toString();
@@ -447,4 +447,23 @@ public class RegularFunctions {
 
         return 0;
     }
+
+    public static int getNotificationCountLocal(Context context){
+
+        SharedPreferences sharedpreferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        Log.e("jay count", String.valueOf(sharedpreferences.getInt("NotificationCount",0)));
+
+        return sharedpreferences.getInt("NotificationCount",0);
+    }
+
+    public static void setNotificationCountLocal(Context context){
+        SharedPreferences sharedpreferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putInt("NotificationCount", 0);
+        editor.apply();
+    }
+
 }

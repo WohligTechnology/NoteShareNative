@@ -24,7 +24,7 @@
 
     <TextView
         android:id="@+id/textViewSlideMenuName"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginLeft="5dp"
         android:gravity="center_vertical"
@@ -32,6 +32,24 @@
         android:textSize="14sp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/nsTextColor" />
+
+        <TextView
+            android:id="@+id/textViewSlideMenuNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="12"
+            android:textSize="18sp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#fff"
+            android:paddingRight="7dp"
+            android:paddingLeft="7dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:background="#ff5a60"
+            android:visibility="gone"/>
+
  </LinearLayout>
     <View
         android:id="@+id/layoutsepreter"

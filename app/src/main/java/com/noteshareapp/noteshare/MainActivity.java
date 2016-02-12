@@ -217,11 +217,30 @@ public class MainActivity extends DrawerActivity {
             }
         }, 300);
 
-        getNotificationCount();
+        //getNotificationCount();
     }
 
-    public void getNotificationCount(){
-        RegularFunctions.getNotificationCount(this);
+    public void getNotificationCount() {
+
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+
+                if (Looper.myLooper() == null) {
+                    Looper.prepare();
+                }
+
+                if (RegularFunctions.checkIsOnlineViaIP()) {
+                    RegularFunctions.getNotificationCountServer(getApplicationContext());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+
+            }
+        }.execute(null, null, null);
     }
 
     public void setFonts() {
@@ -230,7 +249,7 @@ public class MainActivity extends DrawerActivity {
     }
 
     public void syncOnStart() {
-        if(RegularFunctions.checkLastSyncDifference()){
+        if (RegularFunctions.checkLastSyncDifference()) {
 
             int type = RegularFunctions.checkInternetConnectivity(MainActivity.this);
 
@@ -245,7 +264,7 @@ public class MainActivity extends DrawerActivity {
         }
     }
 
-    public void startSync(){
+    public void startSync() {
         final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setCancelable(false);
 
@@ -814,7 +833,7 @@ public class MainActivity extends DrawerActivity {
             noteIdList.add(currentnote.getId().toString());
             String noteDesc = "";
 
-			List<NoteElement> noteElements = NoteElement.find(NoteElement.class, "type = ? and noteid = ?", "text", currentnote.getId().toString());
+            List<NoteElement> noteElements = NoteElement.find(NoteElement.class, "type = ? and noteid = ?", "text", currentnote.getId().toString());
 
             if (noteElements.size() != 0 && noteElements.get(0).getContentA() != null) {
                 noteDesc = noteElements.get(0).getContentA();

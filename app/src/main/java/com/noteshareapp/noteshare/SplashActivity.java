@@ -5,29 +5,28 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-public class SplashActivity extends Activity
-{
-	
-	// Splash screen timer
-  public ImageView imageviewSplashLogo;
-	
-	private static int SPLASH_TIME_OUT = 100;
- 
+public class SplashActivity extends Activity {
+    // Splash screen timer
+    public ImageView imageviewSplashLogo;
+    private static int SPLASH_TIME_OUT = 3000;
+
     @SuppressLint("NewApi")
-	@Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        
-        
-     // Do what you need for this SDK
-     		/*if (Build.VERSION.SDK_INT >19) {
+
+        getNotificationCount();
+        // Do what you need for this SDK
+             /*if (Build.VERSION.SDK_INT >19) {
      			Window window = this.getWindow();
      			window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
      			window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -36,44 +35,64 @@ public class SplashActivity extends Activity
      			
      			
      		}*/
-     		
-     		
-     		
-        imageviewSplashLogo=(ImageView) findViewById(R.id.imgsplashLogo);
-        
+
+
+        imageviewSplashLogo = (ImageView) findViewById(R.id.imgsplashLogo);
+
         Animation hyperspaceJump = AnimationUtils.loadAnimation(this, R.anim.fadeout);
-       // imageviewSplashLogo.startAnimation(hyperspaceJump);
- 
+        // imageviewSplashLogo.startAnimation(hyperspaceJump);
+
         new Handler().postDelayed(new Runnable() {
  
             /*
              * Showing splash screen with a timer. This will be useful when you
              * want to show case your app logo / company
              */
- 
+
             @Override
-            public void run() 
-            {
+            public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
-            	SharedPreferences preferences = SplashActivity.this.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE); 
-            	boolean finish = preferences.getBoolean("FINISHED", false);  
-            	
-            	if (finish==true)
-            	{
-            		Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                SharedPreferences preferences = SplashActivity.this.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                boolean finish = preferences.getBoolean("FINISHED", false);
+
+                if (finish == true) {
+                    Intent i = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(i);
-				}else
-				{
-					
-					//Intent i = new Intent(SplashActivity.this, InteroductionActivity.class);
-					Intent i = new Intent(SplashActivity.this, LoginActivity.class);
-					startActivity(i);
-				}
-                
- 
+                } else {
+
+                    //Intent i = new Intent(SplashActivity.this, InteroductionActivity.class);
+                    Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                    startActivity(i);
+                }
+
+
                 // close this activity
                 finish();
             }
         }, SPLASH_TIME_OUT);
-    }}
+    }
+
+    public void getNotificationCount() {
+
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+
+                if (Looper.myLooper() == null) {
+                    Looper.prepare();
+                }
+
+                if (RegularFunctions.checkIsOnlineViaIP()) {
+                    RegularFunctions.getNotificationCountServer(getApplicationContext());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+
+            }
+        }.execute(null, null, null);
+    }
+}
