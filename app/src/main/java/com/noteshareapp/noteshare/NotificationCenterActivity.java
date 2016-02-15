@@ -35,6 +35,7 @@ public class NotificationCenterActivity extends DrawerActivity {
     public LinearLayout layoutHeder;
     public ImageButton btnheaderMenu;
     public ListView listviewNotification;
+    public TextView empty;
     private ArrayList<HashMap<String, String>> list;
     View contentView;
     private ProgressDialog progressDialog;
@@ -55,7 +56,11 @@ public class NotificationCenterActivity extends DrawerActivity {
         layoutHeder = (LinearLayout) contentView.findViewById(R.id.actionBar);
         btnheaderMenu = (ImageButton) layoutHeder.findViewById(R.id.imageButtonHamburg);
 
+
         listviewNotification = (ListView) contentView.findViewById(R.id.listviewNotification);
+        empty = (TextView) contentView.findViewById(R.id.empty);
+        empty.setTypeface(RegularFunctions.getAgendaMediumFont(this));
+        listviewNotification.setEmptyView(empty);
         addListners();
 
         TextView tvNotificationHead = (TextView) contentView.findViewById(R.id.tvNotificationHead);

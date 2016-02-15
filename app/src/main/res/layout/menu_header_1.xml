@@ -47,7 +47,10 @@
                 android:textSize="18sp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:singleLine="true"
+                android:maxLength="30"
+                android:ellipsize="end"/>
 
         </LinearLayout>
 
