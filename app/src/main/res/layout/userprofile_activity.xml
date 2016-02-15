@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/header_bg"
-    android:orientation="vertical" >
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/header_bg"
+              android:orientation="vertical">
 
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none" >
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="100dp"
@@ -22,7 +22,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/single_logo" />
+                android:src="@drawable/single_logo"/>
 
             <TextView
                 android:id="@+id/UserGreetingmesage"
@@ -33,7 +33,7 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
 
             <ImageButton
                 android:id="@+id/userprofilepicture"
@@ -41,30 +41,68 @@
                 android:layout_height="150dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:padding="5dp"
                 android:background="@drawable/circular_view"
+                android:padding="5dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/gallary_icon" />
+                android:src="@drawable/gallary_icon"/>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@android:color/transparent"/>
+
+            <include
+                android:id="@+id/usernickname"
+                layout="@layout/edit_text_row"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"/>
+
+            <View
+                android:layout_width="200dp"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@android:color/white"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/tvUserEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"/>
+
+
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:orientation="vertical"
                 android:layout_gravity="center_horizontal"
-                android:padding="5dp"
-                android:layout_marginTop="25dp">
+                android:layout_marginTop="25dp"
+                android:orientation="vertical"
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/btnprofileuploadProfile1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@android:color/white"
                     android:gravity="center"
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
-                    android:textSize="16sp"
-                    android:background="@android:color/white"
                     android:text="UPLOAD A PROFILE PICTURE"
-                    android:textColor="@color/header_bg" />
+                    android:textColor="@color/header_bg"
+                    android:textSize="16sp"/>
 
                 <Button
                     android:id="@+id/btnprofileuploadProfile"
@@ -76,48 +114,27 @@
                     android:text="UPLOAD A PROFILE PICTURE"
                     android:textColor="@color/header_bg"
                     android:textSize="18sp"
-                    android:visibility="gone" />
-                
+                    android:visibility="gone"/>
+
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@android:color/transparent" />
 
-            <include
-                android:id="@+id/usernickname"
-                android:layout_width="fill_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="20dp"
-                layout="@layout/edit_text_row" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@android:color/white" />
 
             <Button
                 android:id="@+id/btnprofileNext"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:background="@android:color/white"
                 android:text="DONE"
                 android:textColor="@color/header_bg"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
 
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="20dp"
-                android:background="@android:color/transparent" />
+                android:background="@android:color/transparent"/>
         </LinearLayout>
     </ScrollView>
 

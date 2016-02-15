@@ -85,6 +85,12 @@ public class RegularFunctions {
         return config.getServerid();
     }
 
+    public static String getUserEmail(){
+        Config config = Config.findById(Config.class,1L);
+        return config.getEmail();
+    }
+
+
     public static String getNoteName(String noteId) {
         Note note = Note.findById(Note.class, Long.parseLong(noteId));
         return note.getTitle();

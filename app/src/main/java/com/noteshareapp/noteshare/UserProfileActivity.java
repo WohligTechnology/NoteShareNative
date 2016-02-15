@@ -44,6 +44,7 @@ public class UserProfileActivity extends Activity {
 	public ImageButton userprofilepicture;
 	public Bitmap chossedImage;
 	public TextView chooseImage;
+	private TextView tvUserEmail;
 
 	private static final int SELECT_PICTURE = 1;
 	private static final int REQUEST_CAMERA = 2;
@@ -97,6 +98,10 @@ public class UserProfileActivity extends Activity {
 		textnickname.setText(fname);
 		textnickname.setHint("Select a User Name");
 		textnickname.setTypeface(RegularFunctions.getAgendaMediumFont(this));
+
+		tvUserEmail = (TextView) findViewById(R.id.tvUserEmail);
+		tvUserEmail.setText(RegularFunctions.getUserEmail());
+		tvUserEmail.setTypeface(RegularFunctions.getAgendaMediumFont(this));
 
 		addlistners();
 
