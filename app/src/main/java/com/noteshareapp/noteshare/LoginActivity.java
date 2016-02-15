@@ -55,51 +55,43 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.List;
 
-public class LoginActivity extends FragmentActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener{
-
+public class LoginActivity extends FragmentActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
     LoginButton loginButton;
     CallbackManager callbackManager;
-
     // Logcat tag
     private static final String TAG = "LoginActivity";
-
-
     public final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     public final static String SENDER_ID = "529631001533";
     GoogleCloudMessaging gcm;
     String msg;
     String regid;
     public String socialid, fullname, useremail, profilePicture = "null", loginType;
-
-    String responseFbId = "", responseGpId ="";
+    String responseFbId = "", responseGpId = "";
     static String responseServerId = "";
     ProgressDialog progressDialog;
-
     public SignInButton btnSignIn;
 
     // Google client to interact with Google API
-
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         List<Config> config = Config.listAll(Config.class);
-        if(config.size() == 0) {
-            Config c = new Config("", "", "", "", "", "", 0, "", "", "", "", "MODIFIED_TIME", "DETAIL",0);
+        if (config.size() == 0) {
+            Config c = new Config("", "", "", "", "", "", 0, "", "", "", "", "MODIFIED_TIME", "DETAIL", 0);
             c.save();
 
             long currentTime = RegularFunctions.getCurrentTimeLong();
 
-            Sync sync = new Sync( currentTime, currentTime, currentTime, currentTime, 0l, 1);
+            Sync sync = new Sync(currentTime, currentTime, currentTime, currentTime, 0l, 1);
             sync.save();
         }
 
-        Config configCheck = Config.findById(Config.class,1l);
-        if(!configCheck.fbid.isEmpty() || !configCheck.googleid.isEmpty()){
+        Config configCheck = Config.findById(Config.class, 1l);
+        if (!configCheck.fbid.isEmpty() || !configCheck.googleid.isEmpty()) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
@@ -156,8 +148,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
     private void registerInBackground() {
 
-        new AsyncTask<Void, Void, String> (){
-
+        new AsyncTask<Void, Void, String>() {
             boolean gcmIdReceived = false;
 
             @Override
@@ -180,7 +171,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
             @Override
             protected void onPostExecute(String s) {
-                if(gcmIdReceived){
+                if (gcmIdReceived) {
                     try {
                         sendLogin();
                     } catch (JSONException e) {
@@ -188,8 +179,8 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }else{
-                    Toast.makeText(LoginActivity.this,"Oops! Something went wrong!",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Oops! Something went wrong!", Toast.LENGTH_SHORT).show();
                 }
             }
         }.execute(null, null, null);
@@ -202,7 +193,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
             if (v instanceof TextView) {
                 TextView tv = (TextView) v;
-                tv.setPadding(-1,0,0,0);
+                tv.setPadding(-1, 0, 0, 0);
                 tv.setText(buttonText);
                 tv.setTypeface(RegularFunctions.getAgendaMediumFont(this));
                 return;
@@ -210,10 +201,8 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
         }
     }
 
-
     // Facebook Callback
     FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
-
         @Override
         public void onSuccess(final LoginResult loginResult) {
 
@@ -224,36 +213,36 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
 
-                                FacebookSdk.setIsDebugEnabled(true);
-                                FacebookSdk.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
+                            FacebookSdk.setIsDebugEnabled(true);
+                            FacebookSdk.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
 
 
-                                socialid = object.optString("id");
-                                useremail = object.optString("email");
-                                fullname = object.optString("name");
-                                loginType = "fb";
+                            socialid = object.optString("id");
+                            useremail = object.optString("email");
+                            fullname = object.optString("name");
+                            loginType = "fb";
 
-                                Uri.Builder builder = new Uri.Builder();
-                                builder.scheme("https")
-                                        .authority("graph.facebook.com")
-                                        .appendPath(socialid)
-                                        .appendPath("picture")
-                                        .appendQueryParameter("width", "200")
-                                        .appendQueryParameter("height", "200");
+                            Uri.Builder builder = new Uri.Builder();
+                            builder.scheme("https")
+                                    .authority("graph.facebook.com")
+                                    .appendPath(socialid)
+                                    .appendPath("picture")
+                                    .appendQueryParameter("width", "200")
+                                    .appendQueryParameter("height", "200");
 
-                                Uri pictureUri = builder.build();
+                            Uri pictureUri = builder.build();
 
-                                profilePicture = pictureUri.toString();
+                            profilePicture = pictureUri.toString();
 
-                                getGcmId();
-                                facebookLogout();
+                            getGcmId();
+                            facebookLogout();
 
 
                         }
                     });
             Bundle parameters = new Bundle();
             parameters.putString("fields", "id, name, email");
-                    request.setParameters(parameters);
+            request.setParameters(parameters);
             request.executeAsync();
         }
 
@@ -263,7 +252,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
         @Override
         public void onError(FacebookException e) {
-            if(!RegularFunctions.checkIsOnlineViaIP())
+            if (!RegularFunctions.checkIsOnlineViaIP())
                 Toast.makeText(getApplication(), "Please check your Internet Connection!", Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(getApplication(), "Something went wrong, please try again later", Toast.LENGTH_SHORT).show();
@@ -293,11 +282,11 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
     }
 
-    public void main(View v){
+    public void main(View v) {
         goToMain();
     }
 
-    public void goToMain(){
+    public void goToMain() {
         createDirectory();
         Config c = Config.findById(Config.class, 1l);
         String fname = c.firstname;
@@ -322,13 +311,13 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                 String profilePicture = String.valueOf("profile");
                 File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "/NoteShare/.NoteShare/" + profilePicture + ".jpg");
                 myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(mediaStorageDir));
-            } catch (FileNotFoundException e) {}
+            } catch (FileNotFoundException e) {
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
     private static int getAppVersion(Context context) {
         try {
@@ -341,7 +330,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
         }
     }
 
-    public void getGcmId(){
+    public void getGcmId() {
         if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
             registerInBackground();
@@ -352,10 +341,9 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
-        if (progressDialog!=null && progressDialog.isShowing()){
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }
@@ -366,110 +354,110 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     public void sendLogin() throws JSONException, ClientProtocolException, IOException {
 
         //if(!once) {
-            //once = true;
-            progressDialog = new ProgressDialog(LoginActivity.this);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage("Please wait...");
-            progressDialog.setCanceledOnTouchOutside(false);
-            if (!isFinishing()) {
-                progressDialog.show();
+        //once = true;
+        progressDialog = new ProgressDialog(LoginActivity.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        if (!isFinishing()) {
+            progressDialog.show();
+        }
+
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
             }
 
-            new AsyncTask<Void, Void, String>() {
-                @Override
-                protected void onPreExecute() {
-                    super.onPreExecute();
+            @Override
+            protected String doInBackground(Void... params) {
+
+                if (Looper.myLooper() == null) {
+                    Looper.prepare();
                 }
+                try {
+                    String loginjson = loginJson(loginType, socialid, fullname, useremail, profilePicture, regid).toString();
+                    String response = RegularFunctions.post(RegularFunctions.SERVER_URL + "user/sociallogin1", loginjson);
 
-                @Override
-                protected String doInBackground(Void... params) {
+                    String responseName = null;
+                    String responseEmail = null;
+                    String responseProfilePic = null;
 
-                    if (Looper.myLooper() == null) {
-                        Looper.prepare();
-                    }
                     try {
-                        String loginjson = loginJson(loginType, socialid, "James Davis", useremail, profilePicture, regid).toString();
-                        String response = RegularFunctions.post(RegularFunctions.SERVER_URL + "user/sociallogin1", loginjson);
+                        JSONObject responseJson = new JSONObject(response);
 
-                        String responseName = null;
-                        String responseEmail = null;
-                        String responseProfilePic = null;
+                        responseServerId = responseJson.get("_id").toString();
+                        responseName = responseJson.get("name").toString();
+                        responseEmail = responseJson.get("email").toString();
+                        responseProfilePic = responseJson.get("profilepic").toString();
 
-                        try {
-                            JSONObject responseJson = new JSONObject(response);
+                        createDirectory();
 
-                            responseServerId = responseJson.get("_id").toString();
-                            responseName = responseJson.get("name").toString();
-                            responseEmail = responseJson.get("email").toString();
-                            responseProfilePic = responseJson.get("profilepic").toString();
-
-                            createDirectory();
-
-                            if (loginType.equals("fb"))
-                                responseFbId = responseJson.get("fbid").toString();
-                            else if (loginType.equals("gp"))
-                                responseGpId = responseJson.get("googleid").toString();
-                        } catch (JSONException je) {
-
-                        }
-                        if (responseServerId.isEmpty()) {
-                            if (progressDialog.isShowing()) {
-                                progressDialog.dismiss();
-                            }
-                            Toast.makeText(getApplicationContext(), "Something went wrong! Please try again.", Toast.LENGTH_LONG).show();
-                        } else {
-                            Config c = Config.findById(Config.class, 1l);
-                            c.setFirstname(responseName);
-                            c.setEmail(responseEmail);
-                            c.setFbid(responseFbId);
-                            c.setGoogleid(responseGpId);
-                            c.setProfilepic(responseProfilePic);
-                            c.setServerid(responseServerId);
-                            c.setAppversion(getAppVersion(LoginActivity.this));
-                            c.setDeviceid(regid);
-                            c.save();
-
-                            Long currentTimeLong = RegularFunctions.getCurrentTimeLong();
-                            Long initialTimeLong = 1420113600000l;
-
-                            Sync s = Sync.findById(Sync.class, 1l);
-                            s.setFolderLocalToServer(initialTimeLong);
-                            s.setFolderServerToLocal(initialTimeLong);
-                            s.setNoteLocalToServer(initialTimeLong);
-                            s.setNoteServerToLocal(initialTimeLong);
-                            s.setLastSyncTime(0l);
-                            s.setSyncType(1);
-                            s.save();
-
-                            getBitmapFromURL(c.profilepic);
-
-                            if (progressDialog.isShowing()) {
-                                progressDialog.dismiss();
-                            }
-                            goToMain();
-                            finish();
-                        }
+                        if (loginType.equals("fb"))
+                            responseFbId = responseJson.get("fbid").toString();
+                        else if (loginType.equals("gp"))
+                            responseGpId = responseJson.get("googleid").toString();
                     } catch (JSONException je) {
 
-                    } catch (IOException ioe) {
-                        ioe.printStackTrace();
                     }
-                    return null;
-                }
+                    if (responseServerId.isEmpty()) {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+                        Toast.makeText(getApplicationContext(), "Something went wrong! Please try again.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Config c = Config.findById(Config.class, 1l);
+                        c.setFirstname(responseName);
+                        c.setEmail(responseEmail);
+                        c.setFbid(responseFbId);
+                        c.setGoogleid(responseGpId);
+                        c.setProfilepic(responseProfilePic);
+                        c.setServerid(responseServerId);
+                        c.setAppversion(getAppVersion(LoginActivity.this));
+                        c.setDeviceid(regid);
+                        c.save();
 
-                @Override
-                protected void onPostExecute(String s) {
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
+                        Long currentTimeLong = RegularFunctions.getCurrentTimeLong();
+                        Long initialTimeLong = 1420113600000l;
+
+                        Sync s = Sync.findById(Sync.class, 1l);
+                        s.setFolderLocalToServer(initialTimeLong);
+                        s.setFolderServerToLocal(initialTimeLong);
+                        s.setNoteLocalToServer(initialTimeLong);
+                        s.setNoteServerToLocal(initialTimeLong);
+                        s.setLastSyncTime(0l);
+                        s.setSyncType(1);
+                        s.save();
+
+                        getBitmapFromURL(c.profilepic);
+
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+                        goToMain();
+                        finish();
                     }
-                    finish();
-                    //goToMain();
+                } catch (JSONException je) {
+
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
                 }
-            }.execute(null, null, null);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                finish();
+                //goToMain();
+            }
+        }.execute(null, null, null);
         //}
     }
 
-    public JSONObject loginJson(String loginType, String socialid, String fullname, String useremail , String profilePicture, String regid) throws JSONException {
+    public JSONObject loginJson(String loginType, String socialid, String fullname, String useremail, String profilePicture, String regid) throws JSONException {
 
         JSONObject login = new JSONObject();
         if (loginType.equals("fb")) {
@@ -484,11 +472,12 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
         return login;
     }
 
-    /******* create directory start *******/
+    /*******
+     * create directory start
+     *******/
 
     // create directory NoteShare in internal memory
     // and Images and Audio folder inside NoteShare folder for images, profile picture and audio notes
-
     public void createDirectory() {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
@@ -504,25 +493,33 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
             File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), appName);
             // 2. Create our subdirectory
             if (!mediaStorageDir.exists()) {
-                if (!mediaStorageDir.mkdirs()) { Log.e(TAG, "Failed to create NoteShare directory."); }
+                if (!mediaStorageDir.mkdirs()) {
+                    Log.e(TAG, "Failed to create NoteShare directory.");
+                }
             }
 
             // 3. Creating Image Directory in NoteShare Directory
             File imgDirectory = new File(Environment.getExternalStorageDirectory(), imgDir);
             if (!imgDirectory.exists()) {
-                if (!imgDirectory.mkdirs()) { Log.e(TAG, "Failed to create Image directory."); }
+                if (!imgDirectory.mkdirs()) {
+                    Log.e(TAG, "Failed to create Image directory.");
+                }
             }
 
             // 4. Creating Audio Directory in NoteShare Directory
             File audioDirectory = new File(Environment.getExternalStorageDirectory(), audioDir);
             if (!audioDirectory.exists()) {
-                if (!audioDirectory.mkdirs()) { Log.e(TAG, "Failed to create Audio directory."); }
+                if (!audioDirectory.mkdirs()) {
+                    Log.e(TAG, "Failed to create Audio directory.");
+                }
             }
 
             // 4. Creating Audio Directory in NoteShare Directory
             File extraDirectory = new File(Environment.getExternalStorageDirectory(), extraDir);
             if (!extraDirectory.exists()) {
-                if (!extraDirectory.mkdirs()) { Log.e(TAG, "Failed to create Extra directory."); }
+                if (!extraDirectory.mkdirs()) {
+                    Log.e(TAG, "Failed to create Extra directory.");
+                }
             }
         }
     }
@@ -532,13 +529,14 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
         if (state.equals(Environment.MEDIA_MOUNTED)) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
-    /******* create directory end *******/
+    /*******
+     * create directory end
+     *******/
     @Override
     public void onBackPressed() {
 
@@ -553,7 +551,6 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
         }
     }
-
 
     @Override
     public void onClick(View v) {
@@ -575,7 +572,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
-                        Log.d(TAG,"Logged out");
+                        Log.d(TAG, "Logged out");
                     }
                 });
     }
@@ -593,9 +590,9 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
             useremail = acct.getEmail();
             loginType = "gp";
 
-            if(acct.getPhotoUrl() != null){
+            if (acct.getPhotoUrl() != null) {
                 profilePicture = acct.getPhotoUrl().toString() + "?sz=200";
-            }else{
+            } else {
                 profilePicture = "http://wohlig.co.in/noteshare/defaultprofile.jpg";
             }
 
@@ -603,9 +600,9 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
             googleSignOut();
 
         } catch (Exception e) {
-                e.printStackTrace();
-                googleSignOut();
-                Log.e(TAG, Log.getStackTraceString(e));
+            e.printStackTrace();
+            googleSignOut();
+            Log.e(TAG, Log.getStackTraceString(e));
         }
     }
 
