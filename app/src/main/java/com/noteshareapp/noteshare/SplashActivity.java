@@ -5,10 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -24,7 +22,6 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        getNotificationCount();
         // Do what you need for this SDK
              /*if (Build.VERSION.SDK_INT >19) {
      			Window window = this.getWindow();
@@ -71,28 +68,5 @@ public class SplashActivity extends Activity {
                 finish();
             }
         }, SPLASH_TIME_OUT);
-    }
-
-    public void getNotificationCount() {
-
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-
-                if (Looper.myLooper() == null) {
-                    Looper.prepare();
-                }
-
-                if (RegularFunctions.checkIsOnlineViaIP()) {
-                    RegularFunctions.getNotificationCountServer(getApplicationContext());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-
-            }
-        }.execute(null, null, null);
     }
 }

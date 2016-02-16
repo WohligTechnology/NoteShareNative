@@ -217,7 +217,7 @@ public class MainActivity extends DrawerActivity {
             }
         }, 300);
 
-        //getNotificationCount();
+        getNotificationCount();
     }
 
     public void getNotificationCount() {

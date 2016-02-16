@@ -263,8 +263,7 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
 
         noteElements = (LinearLayout) findViewById(R.id.noteElements);
 
-
-	/* Default Initlization */
+	    /* Default Initlization */
         currentFontSize = 8;
         currentFontColor = Color.BLACK;
 
@@ -1400,7 +1399,7 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
                 final int[] height = {editor.getHeight()};
                 //editor.setHtml(s);
 
-                //editor.requestFocus();
+                editor.requestFocus();
 
                 textelementid.clear();
 
@@ -1416,10 +1415,10 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
                 });
 
                 editor.setPlaceholder("Tap and start typing...");
-                //editor.focusEditor();
-                //editor.requestFocus();
-                //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                //imm.showSoftInput(editor, InputMethodManager.SHOW_IMPLICIT);
+                editor.focusEditor();
+                editor.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(editor, InputMethodManager.SHOW_IMPLICIT);
 
                 /*int[] coords = new int[2];
                 editor.getLocationOnScreen(coords);
