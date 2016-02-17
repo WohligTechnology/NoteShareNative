@@ -3114,6 +3114,7 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
         final RelativeLayout checkbox = (RelativeLayout) viewChecklist.findViewById(R.id.checkbox);
         final ImageView checklist_icon = (ImageView) viewChecklist.findViewById(R.id.checkboxIcon);
         checklist_icon.setTag("0");
+        checklist_icon.setEnabled(false);
         final EditText checklist_text = (EditText) viewChecklist.findViewById(R.id.checkboxText);
         final CheckBox checklistDelete = (CheckBox) viewChecklist.findViewById(R.id.cbDelete);
 
@@ -3188,6 +3189,7 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
                         thisnoteelementid[0] = ne.getId();
                         cb_added[0] = true;
                         checklistDelete.setTag(ne.getId());
+                        checklist_icon.setEnabled(true);
                     }
                     if (cb_added[0]) {
                         NoteElement ne = NoteElement.findById(NoteElement.class, thisnoteelementid[0]);
