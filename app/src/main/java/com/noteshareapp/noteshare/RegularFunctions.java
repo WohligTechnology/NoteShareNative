@@ -11,19 +11,18 @@ import android.net.NetworkInfo;
 import android.os.Environment;
 import android.util.Log;
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 import com.noteshareapp.db.Config;
 import com.noteshareapp.db.Folder;
 import com.noteshareapp.db.Note;
 import com.noteshareapp.db.Sync;
 import com.noteshareapp.sync.FolderSync;
 import com.noteshareapp.sync.NoteSync;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -421,30 +420,23 @@ public class RegularFunctions {
             String notificationJson = getNotificationsJson().toString();
             Log.e("jay sharejson", notificationJson);
 
-            String response = RegularFunctions.post(RegularFunctions.SERVER_URL + "notification/find", notificationJson);
+            String response = RegularFunctions.post(RegularFunctions.SERVER_URL + "notification/countNoti", notificationJson);
             Log.e("jay response", response);
 
-            JSONArray jsonArray = new JSONArray(response);
+            JSONObject jsonObject = new JSONObject(response);
 
-            Log.e("jay json size", String.valueOf(jsonArray.length()));
+            Log.e("jay json count", String.valueOf(jsonObject.optString("count")));
 
-            //String value = jsonObject.get("value").toString();
+            int count = jsonObject.getInt("count");
 
-            if (jsonArray.length() >= 0) {
+            SharedPreferences sharedpreferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
 
-                SharedPreferences sharedpreferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putInt("NotificationCount", count);
+            editor.apply();
 
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putInt("NotificationCount", jsonArray.length());
-                editor.apply();
+            return count;
 
-                Log.e("jay count", String.valueOf(sharedpreferences.getInt("NotificationCount",0)));
-
-                return jsonArray.length();
-            } else {
-                Log.e("jay ", "no notifications");
-                return 0;
-            }
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException io) {
@@ -459,7 +451,6 @@ public class RegularFunctions {
         SharedPreferences sharedpreferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedpreferences.edit();
-        Log.e("jay count", String.valueOf(sharedpreferences.getInt("NotificationCount",0)));
 
         return sharedpreferences.getInt("NotificationCount",0);
     }

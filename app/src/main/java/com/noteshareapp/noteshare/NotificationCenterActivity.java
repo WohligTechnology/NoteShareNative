@@ -294,8 +294,10 @@ public class NotificationCenterActivity extends DrawerActivity {
                     Toast.makeText(NotificationCenterActivity.this, message, Toast.LENGTH_SHORT).show();
                     //onRestart();
 
-                    if (valueTF.equals("true"))
+                    if (valueTF.equals("true")){
+                        RegularFunctions.getNotificationCountServer(NotificationCenterActivity.this);
                         syncNowOrLater();
+                    }
 
                 } else {
                     //imageButton.setClickable(false);
