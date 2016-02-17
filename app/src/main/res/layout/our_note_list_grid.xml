@@ -45,7 +45,8 @@
                 android:textColor="@color/nsTextColor"
                 android:textAllCaps="true"
                 android:textSize="17sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:ellipsize="end"/>
 
             <TextView
                 android:id="@+id/tvNoteDesc"
@@ -54,7 +55,8 @@
                 android:background="@android:color/transparent"
                 android:text=""
                 android:textColor="@color/nsTextColor"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:ellipsize="end"/>
 
         </LinearLayout>
 

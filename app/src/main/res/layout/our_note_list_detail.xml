@@ -126,7 +126,8 @@
             android:text="Lorem Ipsum is simply"
             android:textSize="14sp"
             android:textColor="@color/nsTextColor"
-            android:maxLines="2"/>
+            android:maxLines="2"
+            android:ellipsize="end"/>
 
         <!--<TextView
             android:layout_width="fill_parent"
