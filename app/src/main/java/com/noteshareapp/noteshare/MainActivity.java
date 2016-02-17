@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -207,8 +208,25 @@ public class MainActivity extends DrawerActivity {
                 }
             }
         });
-
+        //getSqlQuery();
         getNotificationCount();
+    }
+
+    public void getSqlQuery() {
+
+        /*SELECT IFNULL(MAX(CAST(SUBSTR(`title`,5) AS UNSIGNED))+1,1) as `num` FROM `note` WHERE `title` LIKE 'Note %' AND `creationTime` > 0  AND (`timebomb` > \(date) OR `timebomb` = 0)*/
+        List<Note> notes = Note.findWithQuery(Note.class, "SELECT * FROM NOTE WHERE `title` LIKE ? AND creationtime != '0'", "Note %");
+        Log.e("jay size", String.valueOf(notes.size()));
+
+        for (int i = 0; i < notes.size(); i++) {
+            Note n = notes.get(i);
+            String title = n.getTitle();
+            Log.e("jay n: ", String.valueOf(i) + " : " + title);
+            String titleSub = title.substring(5);
+            Log.e("jay sub: ", titleSub);
+        }
+
+
     }
 
     public void getNotificationCount() {
@@ -442,7 +460,14 @@ public class MainActivity extends DrawerActivity {
         textViewAdd.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, NoteMainActivity.class));
+                Intent i = new Intent(MainActivity.this, NoteMainActivity.class);
+                if (folderIdforNotes == null || folderIdforNotes.equals("-1")) {
+                    i.putExtra("FolderId", "0");
+                } else {
+                    i.putExtra("FolderId", folderIdforNotes);
+                }
+                startActivity(i);
+                //startActivity(new Intent(context, NoteMainActivity.class));
             }
         });
     }

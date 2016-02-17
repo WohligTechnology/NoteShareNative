@@ -9,7 +9,6 @@ import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
-import android.util.Log;
 
 import com.noteshareapp.db.Config;
 import com.noteshareapp.db.Folder;
@@ -250,17 +249,11 @@ public class RegularFunctions {
             int type = typeOfInternetConnection(context);
             int userType = getUserSyncType();
 
-            Log.e("jay sync type", String.valueOf(type));
-            Log.e("jay sync userType", String.valueOf(userType));
-
             if(userType == 3 && (type == 1 || type == 2)){ // if sync via both is selected
-                Log.e("jay sync via","both");
                 return 1;
             } else if(type == userType){ // if sync via mobile or wifi selected and current network type is also same
-                Log.e("jay sync via is same", String.valueOf(type));
                 return 1;
             } else if (type == 2 && userType == 2) { // if sync via only wifi is selected and current network type is mobile
-                Log.e("jay sync via type mob","and current mob");
                 return 2;
             }
             else
@@ -357,9 +350,6 @@ public class RegularFunctions {
         Long timeFolder = syncFolder.getFolderLocalToServer() - 3600000;
         List<Folder> folders = getFolderList(timeFolder);
 
-        Log.e("jay sync notes", String.valueOf(notes.size()));
-        Log.e("jay sync folders",String.valueOf(folders.size()));
-
         return notes.size() > 0 || folders.size() > 0;
     }
 
@@ -418,15 +408,8 @@ public class RegularFunctions {
 
         try {
             String notificationJson = getNotificationsJson().toString();
-            Log.e("jay sharejson", notificationJson);
-
             String response = RegularFunctions.post(RegularFunctions.SERVER_URL + "notification/countNoti", notificationJson);
-            Log.e("jay response", response);
-
             JSONObject jsonObject = new JSONObject(response);
-
-            Log.e("jay json count", String.valueOf(jsonObject.optString("count")));
-
             int count = jsonObject.getInt("count");
 
             SharedPreferences sharedpreferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);

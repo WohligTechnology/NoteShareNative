@@ -196,6 +196,7 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
     public static String background;
     boolean outsideNote = false;
     boolean out = false;
+    private String folderIdforNotes = "0";
 
     public static String getDurationBreakdown(long millis) {
         if (millis < 0) {
@@ -223,6 +224,7 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
         // setContentView(R.layout.activity_main);
         Intent intent = this.getIntent();
         noteIdForDetails = intent.getStringExtra("NoteId");
+        folderIdforNotes = intent.getStringExtra("FolderId");
         out = intent.getBooleanExtra("Outside", false);
 
         Log.v("select", "onCreate Note Id" + noteIdForDetails);
@@ -2417,7 +2419,7 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
         String timestamp = currentDateStr;
         Note note = null;
         try {
-            note = new Note(textViewheaderTitle.getText().toString(), "", backgroundColor, "0", 0L, "0", "#FFFFFF", timestamp, timestamp, "0", 0, stringToDate(timestamp), stringToDate(timestamp));
+            note = new Note(textViewheaderTitle.getText().toString(), "", backgroundColor, folderIdforNotes, 0L, "0", "#FFFFFF", timestamp, timestamp, "0", 0, stringToDate(timestamp), stringToDate(timestamp));
             note.save();
         } catch (ParseException pe) {
             pe.printStackTrace();
