@@ -44,8 +44,8 @@ public class RegularFunctions {
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static OkHttpClient client = new OkHttpClient();
-    public static String SERVER_URL = "http://api.noteshareapp.com/";
-    //public static String SERVER_URL = "http://192.168.0.126:1337/";
+    //public static String SERVER_URL = "http://api.noteshareapp.com/";
+    public static String SERVER_URL = "http://192.168.1.116:83/";
 
     public static  String PREFERENCES = "NotesharePreferences";
 

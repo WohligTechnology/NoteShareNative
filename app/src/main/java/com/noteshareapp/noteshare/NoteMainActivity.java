@@ -2690,13 +2690,14 @@ public class NoteMainActivity extends DrawerActivity implements OnClickListener 
                         note_imageview.setImageBitmap(b);
 
                         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(0, Integer.parseInt(n.getContentA()), 0, 0);
+                        int top = (int) Math.ceil(Double.parseDouble(n.getContentA()));
+                        params.setMargins(0, top , 0, 0);
                         note_imageview.setLayoutParams(params);
 
 
                         //RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(pxFromDp(this, 25), pxFromDp(this, 25));
                         RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        params1.setMargins(0, Integer.parseInt(n.getContentA()), 0, 0);
+                        params1.setMargins(0, top, 0, 0);
                         scribble_delete.setLayoutParams(params1);
                         //scribble_delete.setPadding(5,5,5,5);
                         scribbleAdded = true;

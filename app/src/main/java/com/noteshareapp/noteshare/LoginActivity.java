@@ -131,6 +131,27 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
     }
 
+    private static int getAppVersion(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+
+    public void getGcmId() {
+        if (checkPlayServices()) {
+            gcm = GoogleCloudMessaging.getInstance(this);
+            registerInBackground();
+
+        } else {
+            Log.e(TAG, "No valid Google Play Services APK found.");
+        }
+    }
+
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {
@@ -319,26 +340,6 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
         }
     }
 
-    private static int getAppVersion(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }
-    }
-
-    public void getGcmId() {
-        if (checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(this);
-            registerInBackground();
-
-        } else {
-            Log.e(TAG, "No valid Google Play Services APK found.");
-        }
-    }
 
     @Override
     protected void onDestroy() {
