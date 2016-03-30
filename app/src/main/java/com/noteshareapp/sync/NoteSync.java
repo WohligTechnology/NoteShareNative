@@ -56,10 +56,9 @@ public class NoteSync {
 
 
     public void localToServer() {
-
         Sync sync = RegularFunctions.getSyncTime();
-        Long time = sync.getNoteLocalToServer() - 3600000;
-        //Long time = sync.getNoteLocalToServer() - 86400000;
+        //Long time = sync.getNoteLocalToServer() - 3600000;
+        Long time = sync.getNoteLocalToServer() - 86400000;
         List<Note> notes = getNoteList(time);
         if (notes.size() > 0) {
 
@@ -184,6 +183,7 @@ public class NoteSync {
                     Log.e("jay i ", String.valueOf(i));
                     Log.e("jay name", title);
                     Log.e("jay folder", folder);
+                    Log.e("jay full", jsonArray.getJSONObject(i).toString());
 
                     if(folder.isEmpty())
                         folder = "0";
