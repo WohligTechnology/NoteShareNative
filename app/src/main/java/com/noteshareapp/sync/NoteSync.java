@@ -74,7 +74,7 @@ public class NoteSync {
                 Log.e("jay funcType", funcType.name());
 
                 try {
-                    String json = localToServerNoteJson(notes.get(i).getTitle(), notes.get(i).getTags(), notes.get(i).getColor(), notes.get(i).getFolder(), String.valueOf(notes.get(i).getRemindertime()), notes.get(i).getTimebomb(), notes.get(i).getBackground(), notes.get(i).getCreationtime(), notes.get(i).getModifytime(), String.valueOf(notes.get(i).getIslocked()), notes.get(i).getCtime(), notes.get(i).getMtime(), getUserId(), funcType, notes.get(i).getServerid(), notes.get(i).getId()).toString();
+                    String json = localToServerNoteJson(notes.get(i).getTitle(), notes.get(i).getTags(), notes.get(i).getBackground(), notes.get(i).getFolder(), String.valueOf(notes.get(i).getRemindertime()), notes.get(i).getTimebomb(), notes.get(i).getColor(), notes.get(i).getCreationtime(), notes.get(i).getModifytime(), String.valueOf(notes.get(i).getIslocked()), notes.get(i).getCtime(), notes.get(i).getMtime(), getUserId(), funcType, notes.get(i).getServerid(), notes.get(i).getId()).toString();
                     String response = RegularFunctions.post(RegularFunctions.SERVER_URL + "note/localtoserver", json);
 
                     JSONObject jsonObject = new JSONObject(response);
@@ -169,9 +169,9 @@ public class NoteSync {
 
 
                     String title = jsonArray.getJSONObject(i).getString("title");
-                    String color = jsonArray.getJSONObject(i).getString("color");
+                    String color = jsonArray.getJSONObject(i).getString("background");
                     String folder = jsonArray.getJSONObject(i).optString("folder");
-                    String background = jsonArray.getJSONObject(i).getString("background");
+                    String background = jsonArray.getJSONObject(i).getString("color");
                     String tags = jsonArray.getJSONObject(i).getString("tags");
                     String creationtime = jsonArray.getJSONObject(i).getString("creationtime");
                     String modifytime = jsonArray.getJSONObject(i).getString("modifytime");
